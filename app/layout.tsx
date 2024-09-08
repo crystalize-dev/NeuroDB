@@ -3,8 +3,8 @@ import './globals.css';
 import { LayoutProvider } from './layoutProvider';
 
 export const metadata: Metadata = {
-    title: 'somename',
-    description: ''
+    title: 'NeuroDB',
+    description: '🧠'
 };
 
 export default function RootLayout({
