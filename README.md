@@ -2,7 +2,5 @@
 
 ## ToDo:
 
--   auth
--   basic interface
--   DB
--   additing an neuro model
+-   Model API + interface
+-   DB integration
