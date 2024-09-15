@@ -52,7 +52,28 @@ model User {
 }
 
 model Model {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  filename  String
-  filepath  String   @unique
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  filename String
+  filepath String @unique
+
+  variables   Variables?
+  variablesId String?    @db.ObjectId
+}
+
+model CategoricalVariable {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  values String[]
+
+  variables   Variables @relation(fields: [variablesId], references: [id], onDelete: Cascade)
+  variablesId String    @db.ObjectId
+}
+
+model Variables {
+  id                   String                @id @default(auto()) @map("_id") @db.ObjectId
+  categoricalVariables CategoricalVariable[] // One-to-many relation
+  continous            String[] // Array of continous variables
+
+  Model   Model?  @relation(fields: [ModelId], references: [id], onDelete: Cascade)
+  ModelId String? @unique @db.ObjectId
 }

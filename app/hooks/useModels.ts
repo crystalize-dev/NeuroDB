@@ -32,10 +32,9 @@ export const useModels = () => {
             loadingString: 'Изменение...',
             successString: 'Изменения сохранены!',
             actionOnSuccess: (data) => {
-                const updatedModel = data as Model;
                 setModels((prevModels) =>
                     prevModels.map((model) =>
-                        model.id === id ? updatedModel : model
+                        model.id === id ? (data as Model) : model
                     )
                 );
             }
@@ -49,6 +48,10 @@ export const useModels = () => {
             }
         });
     }, []);
+
+    useEffect(() => {
+        console.log(models);
+    }, [models]);
 
     return { models, dataFetching, addNewModel, renameModel };
 };

@@ -1,4 +1,5 @@
 'use client';
+import { customAxios } from '@/app/axios/customAxios';
 import Icon from '@/app/components/Icon/Icon';
 import Button from '@/app/components/UI/Button';
 import Input from '@/app/components/UI/Input';
@@ -47,7 +48,7 @@ const ModelPage = () => {
         <div
             className={`relative flex h-full grow flex-col gap-4 p-8 ${!model && 'items-center justify-center'}`}
         >
-            {fetching ? (
+            {fetching || !model ? (
                 <InfinitySpin color="var(--primary)" />
             ) : !model ? (
                 <p className="select-none text-4xl text-gray-400">
@@ -84,6 +85,15 @@ const ModelPage = () => {
                     )}
 
                     <hr className="w-full border-primary" />
+
+                    <p>
+                        Числовых переменных - {model.variables.continous.length}
+                    </p>
+
+                    <p>
+                        Числовых переменных -
+                        {model.variables.categoricalVariables.length}
+                    </p>
                 </>
             )}
         </div>

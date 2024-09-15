@@ -6,7 +6,10 @@
 
 ## ToDo:
 
--   Model execution
+-   Params set interface
+-   Model execution with params
+-   Result from model interface
+-   Another types of neural networks
 
 ## End:
 

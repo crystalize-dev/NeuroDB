@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
+import { CategoricalVariable, Variables } from '@/app/types/ModelType';
 
 const prisma = new PrismaClient();
 const directoryToWatch = path.join(process.cwd(), 'models');
@@ -46,11 +47,26 @@ const handleFileUpload = async (formData: FormData) => {
     const buffer = Buffer.from(arrayBuffer);
     fs.writeFileSync(filePath, buffer);
 
+    const variables = await parseModel(relativeFilePath);
+
     // Save file info to the database
     return await prisma.model.create({
         data: {
             filename: modelName || file.name || 'Без имени',
-            filepath: relativeFilePath
+            filepath: relativeFilePath,
+            variables: {
+                create: {
+                    categoricalVariables: {
+                        createMany: {
+                            data: variables.categoricalVariables.map((cv) => ({
+                                name: cv.name,
+                                values: cv.values
+                            }))
+                        }
+                    },
+                    continous: variables.continous
+                }
+            }
         }
     });
 };
@@ -61,7 +77,16 @@ export async function GET() {
 
         await removeMissingFiles();
 
-        const models = await prisma.model.findMany();
+        const models = await prisma.model.findMany({
+            include: {
+                variables: {
+                    select: {
+                        categoricalVariables: true,
+                        continous: true
+                    }
+                }
+            }
+        });
 
         return NextResponse.json({ models }, { status: 200 });
     } catch (error) {
@@ -86,10 +111,27 @@ async function updateDatabaseWithNewFiles() {
         });
 
         if (!existingFile) {
+            const variables = (await parseModel(relativeFilePath)) as Variables;
+
             await prisma.model.create({
                 data: {
                     filename: file,
-                    filepath: relativeFilePath
+                    filepath: relativeFilePath,
+                    variables: {
+                        create: {
+                            categoricalVariables: {
+                                createMany: {
+                                    data: variables.categoricalVariables.map(
+                                        (cv) => ({
+                                            name: cv.name,
+                                            values: cv.values
+                                        })
+                                    )
+                                }
+                            },
+                            continous: variables.continous
+                        }
+                    }
                 }
             });
         }
@@ -104,18 +146,69 @@ async function removeMissingFiles() {
 
         if (!fs.existsSync(absoluteFilePath)) {
             await prisma.model.delete({
-                where: { id: model.id }
+                where: { id: model.id },
+                include: {
+                    variables: {
+                        select: {
+                            categoricalVariables: true,
+                            continous: true
+                        }
+                    }
+                }
             });
         }
     }
+}
+
+async function parseModel(filepath: string): Promise<Variables> {
+    const continousRegex = new RegExp(
+        '^(?!.*categories\\s+are).*?(\\w+)\\s+Type\\s*-\\s*[^(\\n]+',
+        'gm'
+    );
+
+    const categoricalRegex = new RegExp(
+        '(\\w+)\\s+Type\\s*-\\s*String\\s*\\(categories\\s+are\\s*(\\{[^}]+\\})\\s*\\)',
+        'gm'
+    );
+
+    // Read the file content
+    const fileContent = fs.readFileSync(filepath, 'utf-8');
+
+    // Find all matches for continous variables
+    const continousVariables: string[] = [];
+    let continousMatch;
+    while ((continousMatch = continousRegex.exec(fileContent)) !== null) {
+        continousVariables.push(continousMatch[1]);
+    }
+
+    // Find all matches for categorical variables
+    const categoricalVariables: CategoricalVariable[] = [];
+    let categoricalMatch;
+    while ((categoricalMatch = categoricalRegex.exec(fileContent)) !== null) {
+        const name = categoricalMatch[1];
+        const valuesString = categoricalMatch[2];
+
+        // Remove curly braces and split by spaces to extract values
+        let values = valuesString
+            .replace(/[{}]/g, '') // Remove curly braces
+            .replace(/\"/g, '') // Remove double quotes if present
+            .trim()
+            .replaceAll('\\', '')
+            .split(/\s+/); // Split by one or more spaces
+
+        categoricalVariables.push({ name, values });
+    }
+
+    return {
+        categoricalVariables: categoricalVariables,
+        continous: continousVariables
+    };
 }
 
 export async function PUT(req: NextRequest) {
     const { id, newFilename } = await req.json();
 
     const model = await prisma.model.findUnique({ where: { id } });
-
-    console.log(model);
 
     if (!model) {
         return NextResponse.json(
@@ -127,7 +220,15 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json(
         await prisma.model.update({
             where: { id },
-            data: { filename: newFilename }
+            data: { filename: newFilename },
+            include: {
+                variables: {
+                    select: {
+                        categoricalVariables: true,
+                        continous: true
+                    }
+                }
+            }
         }),
         {
             status: 200
