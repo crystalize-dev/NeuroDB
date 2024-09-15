@@ -6,7 +6,6 @@
 
 ## ToDo:
 
--   Profile reset password
 -   Model execution
 
 ## End:

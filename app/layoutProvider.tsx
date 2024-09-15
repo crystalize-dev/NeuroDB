@@ -8,11 +8,11 @@ import { useModels } from './hooks/useModels';
 import { InfinitySpin } from 'react-loader-spinner';
 
 export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
-    const { models, dataFetching, addNewModel } = useModels();
+    const { models, dataFetching, addNewModel, renameModel } = useModels();
 
     return (
         <SessionProvider>
-            <ModelContext.Provider value={{ models, addNewModel }}>
+            <ModelContext.Provider value={{ models, addNewModel, renameModel }}>
                 <Toaster />
 
                 <Aside />

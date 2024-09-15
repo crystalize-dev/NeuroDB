@@ -26,6 +26,22 @@ export const useModels = () => {
         });
     };
 
+    const renameModel = async (id: string, newFilename: string) => {
+        await customAxios('PUT', `models`, setDataFetching, {
+            data: { id, newFilename },
+            loadingString: 'Изменение...',
+            successString: 'Изменения сохранены!',
+            actionOnSuccess: (data) => {
+                const updatedModel = data as Model;
+                setModels((prevModels) =>
+                    prevModels.map((model) =>
+                        model.id === id ? updatedModel : model
+                    )
+                );
+            }
+        });
+    };
+
     useEffect(() => {
         customAxios('GET', 'models', setDataFetching, {
             actionOnSuccess: (res) => {
@@ -34,5 +50,5 @@ export const useModels = () => {
         });
     }, []);
 
-    return { models, dataFetching, addNewModel };
+    return { models, dataFetching, addNewModel, renameModel };
 };

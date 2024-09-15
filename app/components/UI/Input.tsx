@@ -75,12 +75,13 @@ const Input = ({
     );
 
     const inputClassNames = classNames(
-        'bg-light-object dark:bg-dark-object h-12 w-full rounded-md p-4 !text-base transition-all',
+        'bg-light-object dark:bg-dark-object h-11 w-full rounded-md p-4 !text-base transition-all',
         focusStyles,
         { [disabledStyles]: disabled },
         { 'pr-10': icon },
         inputClassName,
-        { '!outline-red-500': error === 'Required!' }
+        { '!outline-red-500': error === 'Required!' },
+        { '!pr-12': passwordSetup }
     );
 
     const iconClassNames = classNames(
@@ -94,9 +95,8 @@ const Input = ({
     const passwordSetupClassNames = classNames(
         'absolute right-4 text-zinc-400',
         {
-            'top-[calc(50%-0.5rem)] -translate-y-1/2':
-                placeholderType === 'classic',
-            'bottom-[2.1rem]': placeholderType !== 'classic'
+            'top-1/2 -translate-y-1/2': placeholderType === 'classic',
+            'bottom-[0.9rem]': placeholderType !== 'classic'
         }
     );
 

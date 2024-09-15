@@ -37,8 +37,6 @@ const handleFileUpload = async (formData: FormData) => {
         where: { filepath: relativeFilePath }
     });
 
-    console.log(existingFile);
-
     if (existingFile) {
         throw new Error('Файл уже есть в Базе данных!');
     }
@@ -110,4 +108,29 @@ async function removeMissingFiles() {
             });
         }
     }
+}
+
+export async function PUT(req: NextRequest) {
+    const { id, newFilename } = await req.json();
+
+    const model = await prisma.model.findUnique({ where: { id } });
+
+    console.log(model);
+
+    if (!model) {
+        return NextResponse.json(
+            { error: 'Модель не найдена!' },
+            { status: 404 }
+        );
+    }
+
+    return NextResponse.json(
+        await prisma.model.update({
+            where: { id },
+            data: { filename: newFilename }
+        }),
+        {
+            status: 200
+        }
+    );
 }
