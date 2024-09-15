@@ -2,7 +2,6 @@
 import React, { FormEvent, useState } from 'react';
 import Button from '../components/UI/Button';
 import Input from '../components/UI/Input';
-import { customAxios } from '../axios/customAxios';
 import { useRouter } from 'next/navigation';
 import logo from '../img/logo.png';
 import Image from 'next/image';
@@ -36,7 +35,7 @@ const LoginPage = () => {
             if (res && res.ok) {
                 router.push('/');
                 return Promise.resolve('Успешный вход!');
-            } else if (res?.error === 'CredentialsSignin') {
+            } else if (res?.error === 'Wrong email or password!') {
                 return Promise.reject('Неверный пароль или email!');
             } else {
                 return Promise.reject('Что-то пошло не так!');
@@ -74,6 +73,7 @@ const LoginPage = () => {
                     name="email"
                     type="email"
                     required
+                    inputClassName="bg-light"
                     placeholder="Логин (E-mail)"
                 />
 
@@ -82,6 +82,7 @@ const LoginPage = () => {
                     name="password"
                     type="password"
                     required
+                    inputClassName="bg-light"
                     placeholder="Пароль"
                 />
 
@@ -89,7 +90,7 @@ const LoginPage = () => {
                     disabled={fetching}
                     type="submit"
                     variant="colored"
-                    className="w-full"
+                    className="mt-8 w-full"
                 >
                     Войти
                 </Button>

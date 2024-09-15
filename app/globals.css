@@ -28,6 +28,7 @@ button {
 
     --primary: #5858e6;
     --primary-dark: #3232aa;
+    --primary-light: #5858e66c;
 
     scrollbar-width: thin;
     background-color: var(--bg-full);

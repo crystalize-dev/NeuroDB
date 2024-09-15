@@ -12,16 +12,6 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 const prisma = new PrismaClient();
 
-interface CustomUser extends NextAuthUser {
-    id: string;
-    image: string;
-}
-
-// Extend the Session type to include the custom user type
-interface CustomSession extends NextAuthSession {
-    user: CustomUser;
-}
-
 export const authConfig: NextAuthOptions = {
     secret: process.env.SECRET,
     adapter: PrismaAdapter(prisma),
@@ -65,13 +55,11 @@ export const authConfig: NextAuthOptions = {
         async session({ token, session }) {
             if (token) {
                 session.user = session.user || {}; // Ensure session.user is always defined
-                (session.user as CustomUser).id = token.id as string;
                 session.user.name = token.name;
                 session.user.email = token.email;
-                (session.user as CustomUser).image = token.image as string;
             }
 
-            return session as CustomSession;
+            return session;
         },
         async jwt({ token, user }) {
             const email = token.email;

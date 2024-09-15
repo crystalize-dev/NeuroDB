@@ -1,7 +1,5 @@
 'use client';
 import React, { ChangeEvent, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
 import classNames from 'classnames';
 import { IconType } from '../Icon/icon-database';
 import Icon from '../Icon/Icon';
@@ -65,7 +63,7 @@ const Input = ({
 
     // Stylization
     const focusStyles =
-        'outline outline-2 outline-transparent focus:outline-primary-hover';
+        'outline outline-2 outline-transparent focus:outline-primary focus:bg-white';
     const disabledStyles = 'cursor-not-allowed opacity-50';
 
     const containerClassNames = classNames(
@@ -77,7 +75,7 @@ const Input = ({
     );
 
     const inputClassNames = classNames(
-        'bg-light dark:bg-dark-object h-12 w-full rounded-md p-4 !text-base transition-all',
+        'bg-light-object dark:bg-dark-object h-12 w-full rounded-md p-4 !text-base transition-all',
         focusStyles,
         { [disabledStyles]: disabled },
         { 'pr-10': icon },
@@ -85,16 +83,10 @@ const Input = ({
         { '!outline-red-500': error === 'Required!' }
     );
 
-    const linkClassNames = classNames(
-        'cursor-pointer self-end whitespace-nowrap text-zinc-500 outline-none transition-all hover:text-primary hover:underline focus:text-primary focus:underline dark:text-white/20',
-        { 'pointer-events-none opacity-50': disabled }
-    );
-
     const iconClassNames = classNames(
         'pointer-events-none absolute right-4 select-none text-zinc-400',
         {
-            'top-[calc(50%-0.5rem)] -translate-y-1/2':
-                placeholderType === 'classic',
+            'top-1/2 -translate-y-1/2': placeholderType === 'classic',
             'bottom-[2.1rem]': placeholderType !== 'classic'
         }
     );
@@ -109,7 +101,7 @@ const Input = ({
     );
 
     return (
-        <motion.div layout layoutId={layoutId} className={containerClassNames}>
+        <div className={containerClassNames}>
             {placeholderType === 'inner' && (
                 <p className="self-start font-semibold text-inherit">
                     {placeholder}
@@ -132,20 +124,6 @@ const Input = ({
                 className={inputClassNames}
             />
 
-            {!hidden && (
-                <div className="-mt-1 flex w-full items-center justify-between gap-2 text-xs">
-                    <p className="text-red-500">{error}</p>
-                    {forgotPassword && (
-                        <Link
-                            href="/forgot-password"
-                            className={linkClassNames}
-                        >
-                            Forgot password?
-                        </Link>
-                    )}
-                </div>
-            )}
-
             {icon && type !== 'password' && (
                 <Icon icon={icon} className={iconClassNames} />
             )}
@@ -157,7 +135,7 @@ const Input = ({
                     onClick={() => setVisiblePassword(!isVisiblePassword)}
                 />
             )}
-        </motion.div>
+        </div>
     );
 };
 

@@ -11,7 +11,8 @@ const config = {
             colors: {
                 primary: {
                     DEFAULT: 'var(--primary)',
-                    dark: 'var(--primary-dark)'
+                    dark: 'var(--primary-dark)',
+                    light: 'var(--primary-light)'
                 },
                 light: {
                     DEFAULT: 'var(--bg-full)',

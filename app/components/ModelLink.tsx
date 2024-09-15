@@ -12,7 +12,7 @@ const ModelLink = ({ model }: ModelLinkProps) => {
             href={`/model/${model.id}`}
             className="w-full rounded-md px-4 py-2 text-white hover:bg-white/10"
         >
-            {model.name}
+            {model.filename}
         </Link>
     );
 };

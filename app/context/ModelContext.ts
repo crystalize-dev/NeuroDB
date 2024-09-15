@@ -1,10 +1,15 @@
 import { createContext } from 'react';
-import { Folder, Model } from '../types/ModelType';
+import { Model } from '../types/ModelType';
 
 type ModelContextType = {
     models: Model[];
+    addNewModel: (
+        data: FormData,
+        setFetching: React.Dispatch<React.SetStateAction<boolean>>
+    ) => void;
 };
 
 export const ModelContext = createContext<ModelContextType>({
-    models: []
+    models: [],
+    addNewModel: () => {}
 });

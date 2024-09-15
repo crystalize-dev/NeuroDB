@@ -10,6 +10,7 @@ interface Options {
     actionOnFailure?: (error: unknown) => void;
     loadingString?: string;
     successString?: string;
+    filesToUpload?: boolean;
 }
 
 export const customAxios = async (
@@ -19,7 +20,16 @@ export const customAxios = async (
     options?: Options
 ) => {
     const getAxiosInstance = () => {
-        const axiosConfig = { url: `/api/${url}`, method, data: options?.data };
+        const axiosConfig = {
+            url: `/api/${url}`,
+            method,
+            data: options?.data,
+            headers: options?.filesToUpload
+                ? {
+                      'Content-Type': 'multipart/form-data' // Set Content-Type for file uploads
+                  }
+                : undefined
+        };
 
         setFetching(true);
 
@@ -27,7 +37,7 @@ export const customAxios = async (
             .then((res) => {
                 setFetching(false);
 
-                if (res.status === 200) {
+                if (res.status === 200 || res.status === 201) {
                     options?.actionOnSuccess?.(res.data);
                     return res.data;
                 } else {

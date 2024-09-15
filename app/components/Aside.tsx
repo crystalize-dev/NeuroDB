@@ -1,4 +1,4 @@
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import React, { useContext, useEffect, useState } from 'react';
 import Button from './UI/Button';
 import Icon from './Icon/Icon';
@@ -21,7 +21,7 @@ export const Aside = () => {
         else
             setModelsToView(
                 models.filter((model) =>
-                    model.name.toLowerCase().includes(search.toLowerCase())
+                    model.filename.toLowerCase().includes(search.toLowerCase())
                 )
             );
     }, [search, models]);
@@ -36,20 +36,27 @@ export const Aside = () => {
                     alt="logo"
                     width={500}
                     height={500}
-                    className="size-8"
+                    className="size-10"
                     priority
                 />
                 <h1 className="text-2xl !font-bold text-white">NeuroDB</h1>
+
+                <Link title="Профиль" href={'/profile'} className="ml-auto">
+                    <Icon
+                        icon="person"
+                        className="!size-10 rounded-full border-2 border-solid border-white p-2 text-white hover:border-transparent hover:bg-white hover:text-primary"
+                    />
+                </Link>
             </div>
 
             <hr className="w-full border-gray-400" />
 
-            <Link className="w-full" href={'new-model'}>
+            <Link className="w-full" href={'/model/add'}>
                 <Button
                     type="button"
                     variant="colored"
                     className="w-full"
-                    buttonClassName="flex justify-center items-center gap-4 bg-white text-primary hover:bg-transparent hover:border-white hover:text-white"
+                    buttonClassName="flex justify-center items-center gap-4 bg-white hover:!bg-transparent hover:!border-white hover:!text-white !text-primary"
                 >
                     <Icon icon="plus" />
                     Добавить модель
@@ -58,7 +65,7 @@ export const Aside = () => {
 
             <hr className="w-full border-gray-400" />
 
-            <h2 className="text-md text-center text-white">
+            <h2 className="text-md select-none text-center text-white">
                 Список готовых моделей
             </h2>
 
@@ -69,6 +76,7 @@ export const Aside = () => {
                 onType={(value) => setSearch(value)}
                 icon="search"
                 placeholder="Найти"
+                inputClassName="bg-white"
                 placeholderType="classic"
             />
 
@@ -83,16 +91,6 @@ export const Aside = () => {
                     </p>
                 )}
             </div>
-            <Button
-                type="button"
-                variant="transparent"
-                onClick={() => signOut()}
-                className="mt-auto w-fit font-semibold text-white transition-none hover:text-red-500"
-                buttonClassName="flex w-full items-center gap-2 text-center"
-            >
-                Выйти
-                <Icon icon="quit" className="!text-inherit transition-none" />
-            </Button>
         </div>
     );
 };

@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
 
@@ -33,7 +32,7 @@ const Button = ({
                 );
             case 'colored':
                 return classNames(
-                    'border-2 border-solid border-transparent bg-primary text-white transition-all',
+                    'border-2 border-solid border-transparent bg-primary text-white transition-all hover:bg-transparent hover:border-primary hover:text-primary',
                     {
                         '!opacity-50 cursor-not-allowed': disabled
                     }
@@ -49,7 +48,7 @@ const Button = ({
     }, [variant, disabled]);
 
     return (
-        <motion.div layoutId={layoutId} className={`h-fit w-fit ${className}`}>
+        <div className={`h-fit w-fit ${className}`}>
             <button
                 disabled={disabled}
                 className={`h-fit w-full rounded-md px-4 py-2 ${getStyles} ${buttonClassName}`}
@@ -57,7 +56,7 @@ const Button = ({
             >
                 {children}
             </button>
-        </motion.div>
+        </div>
     );
 };
 

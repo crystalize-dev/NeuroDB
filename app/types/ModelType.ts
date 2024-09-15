@@ -1,4 +1,5 @@
 export type Model = {
     id: string;
-    name: string;
+    filename: string;
+    filepath: String;
 };
